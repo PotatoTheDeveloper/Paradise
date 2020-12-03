@@ -335,7 +335,8 @@
 
 /mob/living/simple_animal/hostile/asteroid/goliath/Destroy() // When gibbed / deleted, the ancient goliath that spawned it will be able to spawn another.
 	..()
-	leader.goliaths_owned--
+	if(leader)
+		leader.goliaths_owned--
 
 #undef ANCIENT
 #undef ADULT
