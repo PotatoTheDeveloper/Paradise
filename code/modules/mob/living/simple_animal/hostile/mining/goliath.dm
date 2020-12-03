@@ -53,7 +53,7 @@
 	sentience_type = SENTIENCE_OTHER
 	var/pre_attack = FALSE
 	var/pre_attack_icon = "Goliath_preattack"
-	loot = list(/obj/item/stack/sheet/animalhide/goliath_hide, /obj/item/reagent_containers/food/snacks/monstermeat/goliath)
+	loot = list(/obj/item/stack/sheet/animalhide/goliath_hide)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/Life()
 	. = ..()
@@ -149,7 +149,7 @@
 	throw_message = "does nothing to the tough hide of the"
 	pre_attack_icon = "goliath2"
 	crusher_loot = /obj/item/crusher_trophy/goliath_tentacle
-	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 2, /obj/item/stack/sheet/animalhide/goliath_hide = 1, /obj/item/stack/sheet/bone = 2)
+	butcher_results = list(/obj/item/stack/sheet/animalhide/goliath_hide = 1, /obj/item/stack/sheet/bone = 2)
 	loot = list()
 	stat_attack = UNCONSCIOUS
 	robust_searching = TRUE
