@@ -132,8 +132,8 @@
 	if(growth >= 1200 && growth_stage == SUBADULT && !stat) // Grow to adult
 		name = "goliath"
 		growth_stage = ADULT
-		maxHealth += 150
-		health += 150
+		maxHealth += 100
+		health += 100
 		speed = 3
 		move_to_delay = 40
 		obj_damage = 100
