@@ -65,7 +65,7 @@
 	loot = list()
 
 /mob/living/simple_animal/hostile/asteroid/goliath/juvenile/subadult
-	growth = 600
+	growth = 599
 
 /mob/living/simple_animal/hostile/asteroid/goliath/examine(mob/user)
 	. = ..()
