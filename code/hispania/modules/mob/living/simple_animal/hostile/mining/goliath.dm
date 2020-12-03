@@ -65,7 +65,7 @@
 	loot = list()
 
 /mob/living/simple_animal/hostile/asteroid/goliath/juvenile/subadult
-	growth = 599
+	growth = 600
 
 /mob/living/simple_animal/hostile/asteroid/goliath/examine(mob/user)
 	. = ..()
@@ -112,8 +112,8 @@
 	if(growth >= 600 && growth_stage == JUVENILE && !stat) // Grow to subadult
 		name = "subadult goliath"
 		growth_stage = SUBADULT
-		maxHealth += 50
-		health += 50
+		maxHealth += 100
+		health += 100
 		speed = 2
 		move_to_delay = 4
 		obj_damage = 70

@@ -102,11 +102,17 @@
 		return
 	icon_state = pre_attack_icon
 
+/mob/living/simple_animal/hostile/asteroid/goliath/revive()
+	..()
+	anchored = TRUE
+	add_draconian_effect(draconian_overlay)
+
 /mob/living/simple_animal/hostile/asteroid/goliath/death(gibbed)
 	move_force = MOVE_FORCE_DEFAULT
 	move_resist = MOVE_RESIST_DEFAULT
 	pull_force = PULL_FORCE_DEFAULT
 	..(gibbed)
+	add_draconian_effect(draconian_overlay)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/OpenFire()
 	var/extra_tentacles = 0
@@ -158,9 +164,10 @@
 	. = ..()
 	if(prob(1))
 		new /mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient(loc)
+		return INITIALIZE_HINT_QDEL
 	else if(prob(10))
 		new /mob/living/simple_animal/hostile/asteroid/goliath/juvenile(loc)
-	return INITIALIZE_HINT_QDEL
+		return INITIALIZE_HINT_QDEL
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient
 	name = "ancient goliath"
@@ -278,10 +285,6 @@
 	icon_state = "Goliath_tentacle_retract"
 	deltimer(timerid)
 	timerid = QDEL_IN(src, 7)
-
-/mob/living/simple_animal/hostile/asteroid/goliath/death()
-	..()
-	add_draconian_effect(draconian_overlay)
 
 #undef ANCIENT
 #undef ADULT
