@@ -41,6 +41,7 @@
 #include "code\__DEFINES\game.dm"
 #include "code\__DEFINES\gamemode.dm"
 #include "code\__DEFINES\genetics.dm"
+#include "code\__DEFINES\goliath.dm"
 #include "code\__DEFINES\hud.dm"
 #include "code\__DEFINES\hydroponics.dm"
 #include "code\__DEFINES\instruments.dm"

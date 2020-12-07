@@ -1,22 +1,4 @@
-#define ANCIENT 3
-#define ADULT 2
-#define SUBADULT 1
-#define JUVENILE 0
-#define WILD 0
-#define PASSIVE 1
-#define TAMED 2
-#define NOT_DRACONIAN 0
-#define DRACONIAN 1
-#define FULL_DRACONIAN 2
-#define MEAT /obj/item/reagent_containers/food/snacks/monstermeat
-#define CORE /obj/item/organ/internal/regenerative_core
-#define FLORA /obj/item/reagent_containers/food/snacks/grown/ash_flora
-#define ORGANS /obj/item/organ/internal
-#define DIAMOND /obj/item/stack/ore/diamond
-#define CYBERORGAN /obj/item/organ/internal/cyberimp
-#define DRAGONSBLOOD /obj/item/dragons_blood
-#define GROWTH_MAX 1200
-
+//goliath taming code
 /mob/living/simple_animal/hostile/asteroid/goliath
 	var/growth = 1200 // Out of 1200.
 	var/growth_stage = ADULT // Can be ANCIENT, ADULT, SUBADULT, JUVENILE.
@@ -28,12 +10,55 @@
 	var/draconian = NOT_DRACONIAN // Can be NOT_DRACONIAN, DRACONIAN, FULL_DRACONIAN.
 	var/mutable_appearance/draconian_overlay
 	var/aux_tentacles = 3 // Auxillary tentacles. The total amount of tentacles is 1 + [aux_tentacles] + [extra_tentacles].
-	var/mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient/leader = null
+	var/mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient/leader
 	var/list/ghost_volunteers[0]
 
-/mob/living/simple_animal/hostile/asteroid/goliath/juvenile
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/Life()
+	. = ..()
+	if(!stat && getBruteLoss()) // Regens health slowly
+		adjustBruteLoss(-0.5)
+		if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
+			tame_progress--
+	if(growth <= 1199 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
+		if(!stat)
+			growth++
+			if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
+				tame_progress--
+			if(feed_cooldown >= 1) // Lower the cooldown to be fed
+				feed_cooldown--
+			handle_tame_progress()
+			handle_growth()
+		if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
+			if(prob(10))
+					// 10% chance every cycle to decompose
+				visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
+				gib()
+			if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
+				tame_progress = 0
+	if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
+		var/turf/T = get_turf(leader)
+		var/list/surrounding_turfs = block(locate(T.x - 1, T.y - 1, T.z), locate(T.x + 1, T.y + 1, T.z))
+		if(!surrounding_turfs.len)
+			return
+		if(get_dist(src, T) <= 6)
+			return
+		if(isturf(loc) && get_dist(src, T) <= 50)
+			LoseTarget()
+			Goto(pick(surrounding_turfs), move_to_delay)
+			return
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/revive()
+	..()
+	add_draconian_effect(draconian_overlay)
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/death(gibbed)
+	..(gibbed)
+	add_draconian_effect(draconian_overlay)
+
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile
 	name = "juvenile goliath"
-	desc = "A small red animal. It looks like it can run fast!"
+	desc = "A small red animal. It looks agile!"
 	icon = 'icons/mob/lavaland/lavaland_monsters.dmi'
 	icon_state = "goliath_baby"
 	icon_aggro = "goliath_baby"
@@ -62,12 +87,13 @@
 	gender = NEUTER
 	environment_smash = 1
 	sentience_type = SENTIENCE_OTHER
+	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 1)
 	loot = list()
 
-/mob/living/simple_animal/hostile/asteroid/goliath/juvenile/subadult
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile/subadult
 	growth = 599
 
-/mob/living/simple_animal/hostile/asteroid/goliath/examine(mob/user)
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/examine(mob/user)
 	. = ..()
 	if(stat != DEAD)
 		var/list/msgs = list()
@@ -93,7 +119,7 @@
 					msgs += "<span class='notice'>It seems to want to eat something crunchy!</span>"
 		. += msgs
 
-/mob/living/simple_animal/hostile/asteroid/goliath/Stat()
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/Stat()
 	..()
 	if(statpanel("Status"))
 		if(growth_stage != ADULT && growth_stage != ANCIENT)
@@ -101,14 +127,14 @@
 		else
 			stat(null, "Growth: Complete.")
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/reroll_food() // Picking a random preferred food to eat
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/reroll_food() // Picking a random preferred food to eat
 	if(tame_stage == WILD && tame_progress <= 599)
 		food_wanted = MEAT
 	else
 		var/list/food = list(CORE,FLORA,ORGANS,DIAMOND)
 		food_wanted = pick(food)
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/handle_growth()
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/handle_growth()
 	if(growth >= 600 && growth_stage == JUVENILE && !stat) // Grow to subadult
 		name = "subadult goliath"
 		growth_stage = SUBADULT
@@ -126,6 +152,7 @@
 		icon_living = "goliath_subadult"
 		icon_dead = "goliath_subadult_dead"
 		pre_attack_icon = "goliath_subadult2"
+		butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 1, /obj/item/stack/sheet/bone = 1)
 		environment_smash = 2
 		aux_tentacles = 1
 		add_draconian_effect()
@@ -156,7 +183,7 @@
 		environment_smash = 2
 		aux_tentacles = 3
 		crusher_loot = /obj/item/crusher_trophy/goliath_tentacle
-		butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 2, /obj/item/stack/sheet/animalhide/goliath_hide = 1, /obj/item/stack/sheet/bone = 2, /obj/item/reagent_containers/food/snacks/meat = 1)
+		butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 2, /obj/item/stack/sheet/animalhide/goliath_hide = 1, /obj/item/stack/sheet/bone = 2)
 		loot = list()
 		stat_attack = UNCONSCIOUS
 		robust_searching = TRUE
@@ -165,7 +192,7 @@
 			tame_progress = 0
 			handle_tame_progress()
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/handle_tame_progress()
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/handle_tame_progress()
 	if(tame_progress <= 599 && tame_stage != WILD) // Become feral if left alone for too long
 		tame_stage = WILD
 		visible_message("<span class='warning'>[src] looks frenzied!</span>")
@@ -187,7 +214,7 @@
 		leader.goliaths_owned--
 		leader = null
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/becomeaware() // Becoming tamed and player controlled
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/becomeaware() // Becoming tamed and player controlled
 	visible_message("<span class='notice'>\The [src] looks around...</span>")
 	ghost_volunteers.Cut()
 	request_player()
@@ -214,12 +241,12 @@
 			picking_candidates = FALSE
 	return
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/request_player()
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/request_player()
 	for(var/mob/dead/observer/O in GLOB.player_list)
 		if(check_observer(O))
 			to_chat(O, "<span class='boldnotice'>\A [src] is being tamed. (<a href='?src=[O.UID()];jump=\ref[src]'>Teleport</a> | <a href='?src=[UID()];signup=\ref[O]'>Sign Up</a>)</span>")
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/check_observer(mob/dead/observer/O)
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/check_observer(mob/dead/observer/O)
 	if(cannotPossess(O))
 		return FALSE
 	if(!O.can_reenter_corpse)
@@ -228,14 +255,14 @@
 		return TRUE
 	return FALSE
 
-/mob/living/simple_animal/hostile/asteroid/goliath/Topic(href, href_list)
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/Topic(href, href_list)
 	if("signup" in href_list)
 		var/mob/dead/observer/O = locate(href_list["signup"])
 		if(!O)
 			return
 		volunteer(O)
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/volunteer(mob/dead/observer/O)
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/volunteer(mob/dead/observer/O)
 	if(!picking_candidates)
 		to_chat(O, "Not looking for a ghost, yet.")
 		return
@@ -255,11 +282,11 @@
 	to_chat(O, "<span class='notice'>You've been added to the list of ghosts that may become this [src]. Click again to unvolunteer.</span>")
 	ghost_volunteers.Add(O)
 
-/mob/living/simple_animal/hostile/asteroid/goliath/proc/add_draconian_effect() // Apply the draconian overlay
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/add_draconian_effect() // Apply the draconian overlay
 	cut_overlay(draconian_overlay)
-	var/status
 	if(draconian == NOT_DRACONIAN)
 		return
+	var/status
 	if(stat == DEAD)
 		status = "_dead"
 	if(growth_stage == JUVENILE)
@@ -274,7 +301,7 @@
 		draconian_overlay.alpha = 255
 	add_overlay(draconian_overlay)
 
-/mob/living/simple_animal/hostile/asteroid/goliath/attackby(obj/item/O, mob/user, params) // Feeding to tame
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/attackby(obj/item/O, mob/user, params) // Feeding to tame
 	if(istype(O, food_wanted))
 		if(growth_stage == ADULT && growth_stage == ANCIENT)
 			return
@@ -333,26 +360,7 @@
 	else
 		..()
 
-/mob/living/simple_animal/hostile/asteroid/goliath/Destroy() // When gibbed / deleted, the ancient goliath that spawned it will be able to spawn another.
-	..()
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/Destroy() // When gibbed / deleted, the ancient goliath that spawned it will be able to spawn another.
 	if(leader)
 		leader.goliaths_owned--
-
-#undef ANCIENT
-#undef ADULT
-#undef SUBADULT
-#undef JUVENILE
-#undef WILD
-#undef PASSIVE
-#undef TAMED
-#undef NOT_DRACONIAN
-#undef DRACONIAN
-#undef FULL_DRACONIAN
-#undef MEAT
-#undef CORE
-#undef FLORA
-#undef ORGANS
-#undef DIAMOND
-#undef CYBERORGAN
-#undef DRAGONSBLOOD
-#undef GROWTH_MAX
+	. = ..()

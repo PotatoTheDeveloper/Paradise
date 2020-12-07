@@ -1,22 +1,3 @@
-#define ANCIENT 3
-#define ADULT 2
-#define SUBADULT 1
-#define JUVENILE 0
-#define WILD 0
-#define PASSIVE 1
-#define TAMED 2
-#define NOT_DRACONIAN 0
-#define DRACONIAN 1
-#define FULL_DRACONIAN 2
-#define MEAT /obj/item/reagent_containers/food/snacks/monstermeat
-#define CORE /obj/item/organ/internal/regenerative_core
-#define FLORA /obj/item/reagent_containers/food/snacks/grown/ash_flora
-#define ORGANS /obj/item/organ/internal
-#define DIAMOND /obj/item/stack/ore/diamond
-#define CYBERORGAN /obj/item/organ/internal/cyberimp
-#define DRAGONSBLOOD /obj/item/dragons_blood
-#define GROWTH_MAX 1200
-
 //A slow but strong beast that tries to stun using its tentacles
 /mob/living/simple_animal/hostile/asteroid/goliath
 	name = "goliath"
@@ -53,47 +34,11 @@
 	sentience_type = SENTIENCE_OTHER
 	var/pre_attack = FALSE
 	var/pre_attack_icon = "Goliath_preattack"
-	loot = list(/obj/item/stack/sheet/animalhide/goliath_hide, /obj/item/reagent_containers/food/snacks/monstermeat/goliath)
+	loot = list(/obj/item/stack/sheet/animalhide/goliath_hide)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/Life()
 	. = ..()
 	handle_preattack()
-	if(!stat && getBruteLoss()) // Regens health slowly
-		adjustBruteLoss(-0.5)
-		if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
-			tame_progress--
-	if(growth <= 1199 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
-		if(!stat)
-			growth++
-			if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
-				tame_progress--
-			if(feed_cooldown >= 1) // Lower the cooldown to be fed
-				feed_cooldown--
-			handle_tame_progress()
-			handle_growth()
-		if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
-			if(prob(10))
-					// 10% chance every cycle to decompose
-				visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
-				gib()
-			if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
-				tame_progress = 0
-	if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
-		var/turf/T = get_turf(leader)
-		var/list/surrounding_turfs = block(locate(T.x - 1, T.y - 1, T.z), locate(T.x + 1, T.y + 1, T.z))
-		if(!surrounding_turfs.len)
-			return
-		if(get_dist(src, T) <= 6)
-			return
-		if(isturf(loc) && get_dist(src, T) <= 50)
-			LoseTarget()
-			Goto(pick(surrounding_turfs), move_to_delay)
-			return
-
-/mob/living/simple_animal/hostile/asteroid/goliath/revive()
-	..()
-	anchored = TRUE
-	add_draconian_effect(draconian_overlay)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/proc/handle_preattack()
 	if(ranged_cooldown <= world.time + ranged_cooldown_time * 0.25 && !pre_attack)
@@ -105,13 +50,11 @@
 /mob/living/simple_animal/hostile/asteroid/goliath/revive()
 	..()
 	anchored = TRUE
-	add_draconian_effect(draconian_overlay)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/death(gibbed)
 	move_force = MOVE_FORCE_DEFAULT
 	move_resist = MOVE_RESIST_DEFAULT
 	pull_force = PULL_FORCE_DEFAULT
-	add_draconian_effect(draconian_overlay)
 	..(gibbed)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/OpenFire()
@@ -166,7 +109,7 @@
 		new /mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient(loc)
 		return INITIALIZE_HINT_QDEL
 	else if(prob(10))
-		new /mob/living/simple_animal/hostile/asteroid/goliath/juvenile(loc)
+		new /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile(loc)
 		return INITIALIZE_HINT_QDEL
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient
@@ -182,7 +125,7 @@
 	pre_attack_icon = "Goliath_preattack"
 	throw_message = "does nothing to the rocky hide of the"
 	loot = list(/obj/item/stack/sheet/animalhide/goliath_hide) //A throwback to the asteroid days
-	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 2, /obj/item/stack/sheet/bone = 2)
+	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath= 2, /obj/item/stack/sheet/bone = 2)
 	crusher_drop_mod = 30
 	wander = FALSE
 	growth_stage = ANCIENT
@@ -209,7 +152,7 @@
 			else
 				cached_tentacle_turfs -= t
 	if(target && prob(20) && goliaths_owned <= 2) // Spawn juvenile goliaths to aid in combat. Maximum of 3.
-		var/mob/living/simple_animal/hostile/asteroid/goliath/juvenile/G = new /mob/living/simple_animal/hostile/asteroid/goliath/juvenile(loc)
+		var/mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile/G = new /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile(loc)
 		G.admin_spawned = admin_spawned
 		G.GiveTarget(target)
 		G.friends = friends
@@ -268,7 +211,7 @@
 		if((!QDELETED(spawner) && spawner.faction_check_mob(L)) || L.stat == DEAD)
 			continue
 		visible_message("<span class='danger'>[src] grabs hold of [L]!</span>")
-		if(istype(G, /mob/living/simple_animal/hostile/asteroid/goliath) && G.growth_stage == ADULT)
+		if(istype(G, /mob/living/simple_animal/hostile/asteroid/goliath) && G.growth_stage == ADULT || !istype(G, /mob/living/simple_animal/hostile/asteroid/goliath))
 			L.Stun(5)
 			L.adjustBruteLoss(rand(10,15))
 		else
@@ -285,22 +228,3 @@
 	icon_state = "Goliath_tentacle_retract"
 	deltimer(timerid)
 	timerid = QDEL_IN(src, 7)
-
-#undef ANCIENT
-#undef ADULT
-#undef SUBADULT
-#undef JUVENILE
-#undef WILD
-#undef PASSIVE
-#undef TAMED
-#undef NOT_DRACONIAN
-#undef DRACONIAN
-#undef FULL_DRACONIAN
-#undef MEAT
-#undef CORE
-#undef FLORA
-#undef ORGANS
-#undef DIAMOND
-#undef CYBERORGAN
-#undef DRAGONSBLOOD
-#undef GROWTH_MAX
