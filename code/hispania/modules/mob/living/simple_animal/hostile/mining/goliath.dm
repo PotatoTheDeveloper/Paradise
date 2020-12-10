@@ -20,35 +20,36 @@
 			adjustBruteLoss(-0.5)
 			if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
 				tame_progress--
-		if(growth < 1200 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
-			if(!stat)
-				growth++
-				if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
-					tame_progress--
-				if(feed_cooldown >= 1) // Lower the cooldown to be fed
-					feed_cooldown--
-				handle_tame_progress()
-				handle_growth()
-			if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
-				if(prob(10))
-						// 10% chance every cycle to decompose
-					visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
-					gib()
-				if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
-					tame_progress = 0
-		if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
-			var/turf/T = get_turf(leader)
-			var/list/surrounding_turfs = block(locate(T.x - 1, T.y - 1, T.z), locate(T.x + 1, T.y + 1, T.z))
-			if(!surrounding_turfs.len)
-				return
-			if(get_dist(src, T) <= 6)
-				return
-			if(isturf(loc) && get_dist(src, T) <= 50)
-				LoseTarget()
-				Goto(pick(surrounding_turfs), move_to_delay)
-				return
-	else
-		return FALSE
+	if(growth < GROWTH_MAX && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
+		if(!stat)
+			growth++
+			if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
+				tame_progress--
+			if(feed_cooldown >= 1) // Lower the cooldown to be fed
+				feed_cooldown--
+			handle_tame_progress()
+			handle_growth()
+		if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
+			if(prob(10))
+					// 10% chance every cycle to decompose
+				visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
+				gib()
+			if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
+				tame_progress = 0
+	if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
+		StickAroundAncient()
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/StickAroundAncient()
+	var/turf/T = get_turf(leader)
+	var/list/surrounding_turfs = block(locate(T.x - 1, T.y - 1, T.z), locate(T.x + 1, T.y + 1, T.z))
+	if(!surrounding_turfs.len)
+		return
+	if(get_dist(src, T) <= 6)
+		return
+	if(isturf(loc) && get_dist(src, T) <= 50)
+		LoseTarget()
+		Goto(pick(surrounding_turfs), move_to_delay)
+		return
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/revive()
 	..()
