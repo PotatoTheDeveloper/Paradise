@@ -61,10 +61,7 @@
 		return
 	var/extra_tentacles = 0
 	if(get_dist(src, target) <= 7)//Screen range check, so you can't get tentacle'd offscreen
-		if((aux_tentacles != 0) || (growth_stage == JUVENILE && draconian != NOT_DRACONIAN))
-			visible_message("<span class='warning'>[src] digs its tentacles under [target]!</span>")
-		else
-			visible_message("<span class='warning'>[src] digs a tentacle under [target]!</span>")
+		visible_message("<span class='warning'>[src] digs [aux_tentacles > 0 ? "its tentacles " : "a tentacle"] under [target]!</span>")
 		new /obj/effect/temp_visual/goliath_tentacle/original(tturf, src, (aux_tentacles))
 		ranged_cooldown = world.time + ranged_cooldown_time
 		icon_state = icon_aggro
