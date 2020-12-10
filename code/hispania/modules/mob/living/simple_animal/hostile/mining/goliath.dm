@@ -9,7 +9,7 @@
 	var/feed_cooldown = 0
 	var/draconian = NOT_DRACONIAN // Can be NOT_DRACONIAN, DRACONIAN, FULL_DRACONIAN.
 	var/mutable_appearance/draconian_overlay
-	var/aux_tentacles = 3 // Auxillary tentacles. The total amount of tentacles is 1 + [aux_tentacles] + [extra_tentacles].
+	var/aux_tentacles = 3 // Auxillary tentacles.
 	var/mob/living/simple_animal/hostile/asteroid/goliath/beast/ancient/leader
 	var/list/ghost_volunteers[0]
 
