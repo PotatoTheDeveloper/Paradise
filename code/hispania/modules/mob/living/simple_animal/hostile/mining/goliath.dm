@@ -20,7 +20,7 @@
 			adjustBruteLoss(-0.5)
 			if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
 				tame_progress--
-		if(growth <= 1199 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
+		if(growth < 1200 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
 			if(!stat)
 				growth++
 				if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
