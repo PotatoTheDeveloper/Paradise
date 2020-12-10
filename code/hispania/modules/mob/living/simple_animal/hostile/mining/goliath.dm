@@ -1,6 +1,6 @@
 //goliath taming code
 /mob/living/simple_animal/hostile/asteroid/goliath
-	var/growth = 1200 // Out of 1200.
+	var/growth = GROWTH_MAX //1200.
 	var/growth_stage = ADULT // Can be ANCIENT, ADULT, SUBADULT, JUVENILE.
 	var/tame_progress = 0
 	var/tame_stage = WILD // Can be WILD, PASSIVE, TAMED.
