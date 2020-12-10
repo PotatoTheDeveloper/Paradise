@@ -65,9 +65,7 @@
 			visible_message("<span class='warning'>[src] digs its tentacles under [target]!</span>")
 		else
 			visible_message("<span class='warning'>[src] digs a tentacle under [target]!</span>")
-		if((draconian != NOT_DRACONIAN) || (growth_stage == ANCIENT)) // Ancient goliaths or draconian goliaths get +1 tentacles.
-			extra_tentacles = 1
-		new /obj/effect/temp_visual/goliath_tentacle/original(tturf, src, (aux_tentacles + extra_tentacles))
+		new /obj/effect/temp_visual/goliath_tentacle/original(tturf, src, (aux_tentacles))
 		ranged_cooldown = world.time + ranged_cooldown_time
 		icon_state = icon_aggro
 		pre_attack = FALSE
@@ -127,6 +125,7 @@
 	crusher_drop_mod = 30
 	wander = FALSE
 	growth_stage = ANCIENT
+	aux_tentacles = 1
 	var/list/cached_tentacle_turfs
 	var/turf/last_location
 	var/tentacle_recheck_cooldown = 100

@@ -354,6 +354,7 @@
 			tame_progress += rand(950, 1200)
 			maxHealth += 100
 			health += 100
+			aux_tentacles++
 			to_chat(src, "<span class='biggerdanger'>You feel flames coursing through your body!</span>")
 			draconian++
 			add_draconian_effect()
