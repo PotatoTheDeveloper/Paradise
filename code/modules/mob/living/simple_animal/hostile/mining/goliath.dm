@@ -30,8 +30,6 @@
 	move_force = MOVE_FORCE_VERY_STRONG
 	move_resist = MOVE_FORCE_VERY_STRONG
 	pull_force = MOVE_FORCE_VERY_STRONG
-	gender = NEUTER
-	sentience_type = SENTIENCE_OTHER
 	var/pre_attack = FALSE
 	var/pre_attack_icon = "Goliath_preattack"
 	loot = list(/obj/item/stack/sheet/animalhide/goliath_hide)
@@ -58,10 +56,10 @@
 	..(gibbed)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/OpenFire()
-	var/extra_tentacles = 0
 	var/tturf = get_turf(target)
 	if(!isturf(tturf))
 		return
+	var/extra_tentacles = 0
 	if(get_dist(src, target) <= 7)//Screen range check, so you can't get tentacle'd offscreen
 		if((aux_tentacles != 0) || (growth_stage == JUVENILE && draconian != NOT_DRACONIAN))
 			visible_message("<span class='warning'>[src] digs its tentacles under [target]!</span>")

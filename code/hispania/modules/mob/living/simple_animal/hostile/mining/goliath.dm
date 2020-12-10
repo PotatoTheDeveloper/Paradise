@@ -1,6 +1,6 @@
 //goliath taming code
 /mob/living/simple_animal/hostile/asteroid/goliath
-	var/growth = 1200 // Out of 1200.
+	var/growth = GROWTH_MAX // Out of 1200.
 	var/growth_stage = ADULT // Can be ANCIENT, ADULT, SUBADULT, JUVENILE.
 	var/tame_progress = 0
 	var/tame_stage = WILD // Can be WILD, PASSIVE, TAMED.
@@ -15,37 +15,40 @@
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/Life()
 	. = ..()
-	if(!stat && getBruteLoss()) // Regens health slowly
-		adjustBruteLoss(-0.5)
-		if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
-			tame_progress--
-	if(growth <= 1199 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
-		if(!stat)
-			growth++
-			if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
+	if(stat != DEAD)
+		if(!stat && getBruteLoss()) // Regens health slowly
+			adjustBruteLoss(-0.5)
+			if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
 				tame_progress--
-			if(feed_cooldown >= 1) // Lower the cooldown to be fed
-				feed_cooldown--
-			handle_tame_progress()
-			handle_growth()
-		if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
-			if(prob(10))
-					// 10% chance every cycle to decompose
-				visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
-				gib()
-			if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
-				tame_progress = 0
-	if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
-		var/turf/T = get_turf(leader)
-		var/list/surrounding_turfs = block(locate(T.x - 1, T.y - 1, T.z), locate(T.x + 1, T.y + 1, T.z))
-		if(!surrounding_turfs.len)
-			return
-		if(get_dist(src, T) <= 6)
-			return
-		if(isturf(loc) && get_dist(src, T) <= 50)
-			LoseTarget()
-			Goto(pick(surrounding_turfs), move_to_delay)
-			return
+		if(growth <= 1199 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
+			if(!stat)
+				growth++
+				if(tame_progress >= 1 && tame_stage != TAMED) // Lose tame progress overtime.
+					tame_progress--
+				if(feed_cooldown >= 1) // Lower the cooldown to be fed
+					feed_cooldown--
+				handle_tame_progress()
+				handle_growth()
+			if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
+				if(prob(10))
+						// 10% chance every cycle to decompose
+					visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
+					gib()
+				if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
+					tame_progress = 0
+		if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
+			var/turf/T = get_turf(leader)
+			var/list/surrounding_turfs = block(locate(T.x - 1, T.y - 1, T.z), locate(T.x + 1, T.y + 1, T.z))
+			if(!surrounding_turfs.len)
+				return
+			if(get_dist(src, T) <= 6)
+				return
+			if(isturf(loc) && get_dist(src, T) <= 50)
+				LoseTarget()
+				Goto(pick(surrounding_turfs), move_to_delay)
+				return
+	else
+		return FALSE
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/revive()
 	..()
@@ -88,7 +91,6 @@
 	environment_smash = 1
 	sentience_type = SENTIENCE_OTHER
 	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 1)
-	loot = list()
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile/subadult
 	growth = 599
@@ -135,7 +137,7 @@
 		food_wanted = pick(food)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/handle_growth()
-	if(growth >= 600 && growth_stage == JUVENILE && !stat) // Grow to subadult
+	if(growth >= GROWTH_HALF && growth_stage == JUVENILE && !stat) // Grow to subadult
 		name = "subadult goliath"
 		growth_stage = SUBADULT
 		maxHealth += 100
@@ -156,7 +158,7 @@
 		environment_smash = 2
 		aux_tentacles = 1
 		add_draconian_effect()
-	if(growth >= 1200 && growth_stage == SUBADULT && !stat) // Grow to adult
+	if(growth >= GROWTH_MAX && growth_stage == SUBADULT && !stat) // Grow to adult
 		name = "goliath"
 		growth_stage = ADULT
 		maxHealth += 100
@@ -184,7 +186,6 @@
 		aux_tentacles = 3
 		crusher_loot = /obj/item/crusher_trophy/goliath_tentacle
 		butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 2, /obj/item/stack/sheet/animalhide/goliath_hide = 1, /obj/item/stack/sheet/bone = 2)
-		loot = list()
 		stat_attack = UNCONSCIOUS
 		robust_searching = TRUE
 		add_draconian_effect()
@@ -193,12 +194,12 @@
 			handle_tame_progress()
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/handle_tame_progress()
-	if(tame_progress <= 599 && tame_stage != WILD) // Become feral if left alone for too long
+	if(tame_progress < GROWTH_HALF && tame_stage != WILD) // Become feral if left alone for too long
 		tame_stage = WILD
 		visible_message("<span class='warning'>[src] looks frenzied!</span>")
 		food_wanted = MEAT
 		faction = list("mining")
-	if(tame_progress >= 600 && tame_stage == WILD) // Become neutral
+	if(tame_progress >= GROWTH_HALF && tame_stage == WILD) // Become neutral
 		tame_stage = PASSIVE
 		visible_message("<span class='warning'>[src] looks pacified...</span>")
 		reroll_food()
@@ -239,7 +240,6 @@
 			visible_message("<span class='notice'>\The [src] looks undecided...</span>")
 			tame_progress = 2100
 			picking_candidates = FALSE
-	return
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/request_player()
 	for(var/mob/dead/observer/O in GLOB.player_list)

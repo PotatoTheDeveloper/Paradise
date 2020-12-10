@@ -16,3 +16,4 @@
 #define CYBERORGAN /obj/item/organ/internal/cyberimp
 #define DRAGONSBLOOD /obj/item/dragons_blood
 #define GROWTH_MAX 1200
+#define GROWTH_HALF 600
