@@ -346,7 +346,7 @@
 				to_chat(user, "<span class='warning'>\The [src] is dead!</span>")
 			else if(feed_cooldown >= 1)
 				to_chat(user, "<span class='warning'>\The [src] is not hungry yet!</span>")
-	else if(istype(O, DRAGONSBLOOD) && draconian <= 1)
+	else if(istype(O, DRAGONSBLOOD) && draconian <= DRACONIAN)
 		if(!stat)
 			user.visible_message("<span class='notice'>[user] feeds [O] to [src].</span>")
 			user.drop_item()
