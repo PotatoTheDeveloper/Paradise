@@ -94,7 +94,7 @@
 	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 1)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile/subadult
-	growth = 599
+	growth = GROWTH_HALF-1
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/examine(mob/user)
 	. = ..()
