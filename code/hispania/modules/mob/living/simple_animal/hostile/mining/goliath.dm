@@ -88,9 +88,7 @@
 	move_force = MOVE_FORCE_DEFAULT
 	move_resist = MOVE_RESIST_DEFAULT
 	pull_force = PULL_FORCE_DEFAULT
-	gender = NEUTER
 	environment_smash = 1
-	sentience_type = SENTIENCE_OTHER
 	butcher_results = list(/obj/item/reagent_containers/food/snacks/monstermeat/goliath = 1)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile/subadult
