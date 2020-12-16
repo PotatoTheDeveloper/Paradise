@@ -30,12 +30,11 @@
 			handle_tame_progress()
 			handle_growth()
 		if((stat == DEAD) && (tame_stage != TAMED)) // So that 1) an ancient goliath can't immediately spawn another juvenile goliath if it dies, and 2) can't easily cheese the juvenile goliath taming process
-			if(prob(10))
-					// 10% chance every cycle to decompose
-				visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
-				gib()
 			if(tame_stage != TAMED) // Tame progress is reset unles it was tamed.
 				tame_progress = 0
+			spawn(3000)
+				visible_message("<span class='notice'>\The dead body of the [src] decomposes!</span>")
+				gib()
 	if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
 		StickAroundAncient()
 
@@ -56,8 +55,8 @@
 	add_draconian_effect(draconian_overlay)
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/death(gibbed)
-	..(gibbed)
 	add_draconian_effect(draconian_overlay)
+	..(gibbed)
 
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile
@@ -193,20 +192,20 @@
 			handle_tame_progress()
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/handle_tame_progress()
-	if(tame_progress < GROWTH_HALF && tame_stage != WILD) // Become feral if left alone for too long
+	if(tame_progress < TAME_PROGRESS_PASSIVE && tame_stage != WILD) // Become feral if left alone for too long
 		tame_stage = WILD
 		visible_message("<span class='warning'>[src] looks frenzied!</span>")
 		food_wanted = MEAT
 		faction = list("mining")
-	if(tame_progress >= GROWTH_HALF && tame_stage == WILD) // Become neutral
+	if(tame_progress >= TAME_PROGRESS_PASSIVE && tame_stage == WILD) // Become neutral
 		tame_stage = PASSIVE
 		visible_message("<span class='warning'>[src] looks pacified...</span>")
 		reroll_food()
 		faction |= "neutral"
-	if(tame_progress >= 2400 && !picking_candidates && !key) // Become player controlled
+	if(tame_progress >= TAME_PROGRESS_TAMING && !picking_candidates && !key) // Become player controlled
 		picking_candidates = TRUE
 		becomeaware()
-	if(tame_progress >= 2400 && key && tame_stage == PASSIVE) // Become tamed if you're already player controlled.
+	if(tame_progress >= TAME_PROGRESS_TAMING && key && tame_stage == PASSIVE) // Become tamed if you're already player controlled.
 		to_chat(src, "<span class='biggerdanger'>You have been tamed!</span>")
 		to_chat(src, "<span class='danger'>You have been introduced to the non-aggressive way of living by being fed and treated well, but you have also been disowned by the creatures you previously coexisted with.</span>")
 		tame_stage = TAMED
