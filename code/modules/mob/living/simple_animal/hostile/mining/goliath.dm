@@ -144,20 +144,7 @@
 					new /obj/effect/temp_visual/goliath_tentacle(t, src)
 			else
 				cached_tentacle_turfs -= t
-	if(target && prob(20) && goliaths_owned <= 2) // Spawn juvenile goliaths to aid in combat. Maximum of 3.
-		var/mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile/G = new /mob/living/simple_animal/hostile/asteroid/goliath/beast/juvenile(loc)
-		G.admin_spawned = admin_spawned
-		G.GiveTarget(target)
-		G.friends = friends
-		G.faction = faction.Copy()
-		visible_message("<span class='warning'>[src]'s matter splits off to form a smaller monster!</span>")
-		goliaths_owned++
-		G.leader = src
-	if(stat != DEAD && goliaths_owned <= 4) // Pick up stray juveniles and subadults for a max of 5, up from 3 it can spawn
-		for(var/mob/living/simple_animal/hostile/asteroid/goliath/S in range(7,src))
-			if((S.leader == null || S.leader.stat == DEAD) && S.tame_stage == WILD && (S.growth_stage != ADULT && S.growth_stage != ANCIENT))
-				S.leader = src
-				goliaths_owned++
+	handle_goliaths_owned()
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/tendril
 	fromtendril = TRUE
