@@ -61,7 +61,7 @@
 		return
 	if(get_dist(src, target) <= 7)//Screen range check, so you can't get tentacle'd offscreen
 		visible_message("<span class='warning'>[src] digs [aux_tentacles > 0 ? "its tentacles " : "a tentacle"] under [target]!</span>")
-		new /obj/effect/temp_visual/goliath_tentacle/original(tturf, src, (aux_tentacles))
+		new /obj/effect/temp_visual/goliath_tentacle/original(tturf, src, aux_tentacles)
 		ranged_cooldown = world.time + ranged_cooldown_time
 		icon_state = icon_aggro
 		pre_attack = FALSE
@@ -191,7 +191,7 @@
 		if((!QDELETED(spawner) && spawner.faction_check_mob(L)) || L.stat == DEAD)
 			continue
 		visible_message("<span class='danger'>[src] grabs hold of [L]!</span>")
-		if(istype(G, /mob/living/simple_animal/hostile/asteroid/goliath) && G.growth_stage == ADULT || !istype(G, /mob/living/simple_animal/hostile/asteroid/goliath))
+		if((istype(G, /mob/living/simple_animal/hostile/asteroid/goliath) && G.growth_stage == ADULT || !istype(G, /mob/living/simple_animal/hostile/asteroid/goliath))
 			L.Stun(5)
 			L.adjustBruteLoss(rand(10,15))
 		else
