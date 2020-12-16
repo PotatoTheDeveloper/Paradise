@@ -1,3 +1,4 @@
+
 //goliath taming code
 /mob/living/simple_animal/hostile/asteroid/goliath
 	var/growth = GROWTH_MAX //1200.
