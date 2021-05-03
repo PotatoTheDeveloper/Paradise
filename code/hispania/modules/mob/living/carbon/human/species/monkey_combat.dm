@@ -207,7 +207,7 @@
 				return TRUE*/
 
 			// nuh uh you don't pull me!
-			if(pulledby || prob(MONKEY_PULL_AGGRO_PROB))
+			if(pulledby)
 				if(Adjacent(pulledby))
 					a_intent = INTENT_DISARM
 					monkey_attack(pulledby)
