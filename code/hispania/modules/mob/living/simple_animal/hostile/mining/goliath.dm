@@ -1,6 +1,8 @@
 
 //goliath taming code
 /mob/living/simple_animal/hostile/asteroid/goliath
+	var/hunger = HUNGRY
+	var/hunger_progress = 0
 	var/growth = GROWTH_MAX //1200.
 	var/growth_stage = ADULT // Can be ANCIENT, ADULT, SUBADULT, JUVENILE.
 	var/tame_progress = 0
@@ -18,9 +20,27 @@
 	. = ..()
 	if(stat != DEAD)
 		if(!stat && getBruteLoss()) // Regens health slowly
-			adjustBruteLoss(-0.5)
+			switch(hunger)
+				if(HUNGRY)
+					adjustBruteLoss(-0.5)
+				if(SATIATED)
+					adjustBruteLoss(-1)
+				if(WELL_FED)
+					adjustBruteLoss(-1.5)
+				if(FULL_STOMACH)
+					adjustBruteLoss(-2)
 			if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
 				tame_progress--
+			if(hunger_progress > 100)
+				hunger_progress = 100
+			hunger_progress--
+		if(tame_stage == TAMED && growth_stage == ADULT && lavaland_equipment_pressure_check(get_turf(src)))
+			speed = 1
+			move_to_delay = 3
+		else
+			speed = 3
+			move_to_delay = 40
+
 	if(growth < GROWTH_MAX && (growth_stage != ADULT && growth_stage != ANCIENT)) // Juvenile goliath related things.
 		if(!stat)
 			growth++
@@ -38,6 +58,32 @@
 				gib()
 	if(!target && leader && prob(70) && !stat && leader.stat != DEAD && tame_stage == WILD) // Stick around your ancient goliath if you're not chasing after anything and aren't being tamed
 		StickAroundAncient()
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/bullet_act(obj/item/projectile/P)
+	if(tame_stage == TAMED && P.damage_type == BRUTE && lavaland_equipment_pressure_check(get_turf(src)))
+		switch(draconian)
+			if(FULL_DRACONIAN)
+				P.damage = (P.damage / 4)
+				visible_message("<span class='danger'>[P] has a reduced effect on [src]!</span>")
+			if(DRACONIAN)
+				P.damage = (P.damage / 2)
+				visible_message("<span class='danger'>[P] has a reduced effect on [src]!</span>")
+			if(NOT_DRACONIAN)
+				P.damage = (P.damage / 1.33)
+				visible_message("<span class='danger'>[P] has a reduced effect on [src]!</span>")
+	..()
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/attack_threshold_check(damage, damagetype, armorcheck)
+	if(tame_stage == TAMED && damagetype == BRUTE && lavaland_equipment_pressure_check(get_turf(src)))
+		switch(draconian)
+			if(FULL_DRACONIAN)
+				damage = (damage / 4)
+			if(DRACONIAN)
+				damage = (damage / 2)
+			if(NOT_DRACONIAN)
+				damage = (damage / 1.33)
+	..()
+
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/StickAroundAncient()
 	var/turf/T = get_turf(leader)
@@ -127,6 +173,7 @@
 			stat(null, "Growth: [(growth*100)/GROWTH_MAX]%.")
 		else
 			stat(null, "Growth: Complete.")
+		stat(null, "[hunger]")
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/reroll_food() // Picking a random preferred food to eat
 	if(tame_stage == WILD && tame_progress <= 599)
@@ -213,6 +260,17 @@
 		faction = list("neutral")
 		leader.goliaths_owned--
 		leader = null
+
+
+/mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/handle_hunger()
+	if(hunger_progress >= 90)
+		hunger = FULL_STOMACH
+	else if(hunger_progress < 90 && hunger_progress >= 50)
+		hunger = WELL_FED
+	else if(hunger progress < 50 && hunger_progress >= 10)
+		hunger = SATIATED
+	else
+		hunger = HUNGRY
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/becomeaware() // Becoming tamed and player controlled
 	visible_message("<span class='notice'>\The [src] looks around...</span>")
@@ -302,11 +360,13 @@
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/attackby(obj/item/O, mob/user, params) // Feeding to tame
 	if(istype(O, food_wanted))
-		if(growth_stage == ADULT && growth_stage == ANCIENT)
-			return
+		if(tame_stage != TAMED)
+			if(growth_stage == ADULT && growth_stage == ANCIENT)
+				return
 		if(!stat && feed_cooldown <= 0)
 			switch(food_wanted)
 				if(MEAT)
+					hunger_progress += 20
 					tame_progress += rand(200, 350)
 				if(DIAMOND)
 					var/obj/item/stack/ore/diamond/D = O
@@ -314,47 +374,65 @@
 						to_chat(user, "<span class='warning'>\The [src] only wants one diamond!</span>") // So that you don't accidentally feed more than one diamond
 						return
 					else
+						hunger_progress += 40
 						tame_progress += rand(250, 400)
 				if(CORE)
 					var/obj/item/organ/internal/regenerative_core/R = O
 					if(!R.inert)
+						hunger_progress += 40
 						tame_progress += rand(250, 450)
-						adjustBruteLoss(-25)
+						adjustBruteLoss(-150)
 					else
+						hunger_progress += 20
 						tame_progress += rand(150, 250) // Inert cores don't count a lot
 						visible_message("<span class='notice'>\The [src] didn't like [O] too much...</span>")
 				if(FLORA)
+					hunger_progress += 20
 					tame_progress += rand(150, 350)
 				if(ORGANS)
 					if((istype(O, CORE)) || (istype(O, CYBERORGAN))) // No legion or cyberimp organs if it wants organs.
 						return
 					else
+						hunger_progress += 60
 						tame_progress += rand(300, 500)
+
 			user.visible_message("<span class='notice'>[user] feeds [O] to [src].</span>")
 			playsound(get_turf(src), 'sound/items/eatfood.ogg', 50, 0)
 			user.drop_item()
 			qdel(O)
-			if(food_wanted == MEAT)
-				feed_cooldown = rand(5, 10)
-			else
-				feed_cooldown = rand(20, 50)
+			feed_cooldown = rand(1, 20)
 			reroll_food()
 		else // If dead or not hungry
 			if(stat == DEAD)
 				to_chat(user, "<span class='warning'>\The [src] is dead!</span>")
 			else if(feed_cooldown >= 1)
 				to_chat(user, "<span class='warning'>\The [src] is not hungry yet!</span>")
-	else if(istype(O, DRAGONSBLOOD) && draconian <= DRACONIAN)
+	else if(istype(O, DRAGONRIBS) && draconian < DRACONIAN)
+		if(!stat)
+			user.visible_message("<span class='notice'>[user] feeds [O] to [src].</span>")
+			user.drop_item()
+			qdel(O)
+			playsound(get_turf(src), 'sound/items/eatfood.ogg', 50, 0)
+			hunger_progress = 100
+			tame_progress += rand(600, 1000)
+			maxHealth += 100
+			health += 100
+			aux_tentacles++
+			to_chat(src, "<span class='biggerdanger'>You feel flames coursing through your body!</span>")
+			draconian++
+			add_draconian_effect()
+	else if(istype(O, DRAGONSBLOOD) && draconian == DRACONIAN)
 		if(!stat)
 			user.visible_message("<span class='notice'>[user] feeds [O] to [src].</span>")
 			user.drop_item()
 			qdel(O)
 			playsound(get_turf(src), 'sound/items/drink.ogg', 50, 0)
+			hunger_progress = 100
 			tame_progress += rand(950, 1200)
 			maxHealth += 100
 			health += 100
 			aux_tentacles++
-			to_chat(src, "<span class='biggerdanger'>You feel flames coursing through your body!</span>")
+			to_chat(src, "<span class='biggerdanger'>You feel the flames on your body get stronger!</span>")
 			draconian++
 			add_draconian_effect()
 	else
