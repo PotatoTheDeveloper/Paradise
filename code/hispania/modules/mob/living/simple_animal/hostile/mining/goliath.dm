@@ -267,7 +267,7 @@
 		hunger = FULL_STOMACH
 	else if(hunger_progress < 90 && hunger_progress >= 50)
 		hunger = WELL_FED
-	else if(hunger progress < 50 && hunger_progress >= 10)
+	else if(hunger_progress < 50 && hunger_progress >= 10)
 		hunger = SATIATED
 	else
 		hunger = HUNGRY
