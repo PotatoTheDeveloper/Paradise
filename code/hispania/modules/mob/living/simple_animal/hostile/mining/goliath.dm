@@ -2,6 +2,7 @@
 //goliath taming code
 /mob/living/simple_animal/hostile/asteroid/goliath
 	var/hunger = HUNGRY
+	var/hunger_status = "You are hungry!"
 	var/hunger_progress = 0
 	var/growth = GROWTH_MAX //1200.
 	var/growth_stage = ADULT // Can be ANCIENT, ADULT, SUBADULT, JUVENILE.
@@ -23,12 +24,16 @@
 			switch(hunger)
 				if(HUNGRY)
 					adjustBruteLoss(-0.5)
+					hunger_status = "Hungry"
 				if(SATIATED)
 					adjustBruteLoss(-1)
+					hunger_status = "Satiated"
 				if(WELL_FED)
 					adjustBruteLoss(-1.5)
+					hunger_status = "Well Fed"
 				if(FULL_STOMACH)
 					adjustBruteLoss(-2)
+					hunger_status = "Full"
 			if(prob(70) && tame_progress != TAMED && tame_progress >= 1 && (growth_stage != ADULT && growth_stage != ANCIENT)) // Lose taming progress if you were hurt
 				tame_progress--
 			if(hunger_progress > 100)
@@ -164,6 +169,16 @@
 					msgs += "<span class='notice'>It seems to want to eat something soft!</span>"
 				if(DIAMOND)
 					msgs += "<span class='notice'>It seems to want to eat something crunchy!</span>"
+		if(tame_stage == TAMED)
+			switch(hunger)
+				if(HUNGRY)
+					msgs += "<span class='notice'>It seems hungry!</span>"
+				if(SATIATED)
+					msgs += "<span class='notice'>It seems satiated!</span>"
+				if(WELL_FED)
+					msgs += "<span class='notice'>It seems well fed!</span>"
+				if(FULL_STOMACH)
+					msgs += "<span class='notice'>It seems happy!</span>"
 		. += msgs
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/Stat()
@@ -173,7 +188,7 @@
 			stat(null, "Growth: [(growth*100)/GROWTH_MAX]%.")
 		else
 			stat(null, "Growth: Complete.")
-		stat(null, "[hunger]")
+		stat(null, "[hunger_status]")
 
 /mob/living/simple_animal/hostile/asteroid/goliath/beast/proc/reroll_food() // Picking a random preferred food to eat
 	if(tame_stage == WILD && tame_progress <= 599)
