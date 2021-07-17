@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="utf-8" />
+    
+    <base href="../../" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="extra.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>&#x2F;obj&#x2F;effect&#x2F;warped_rune - Paradise Code Docs</title>
+    
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper blue">
+            <a href="index.html" class="brand-logo">&nbsp;Paradise Code Docs</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                
+                <li><a href="index.html#modules">Modules</a></li>
+                <li><a href="index.html#types">Types</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+    <main class="container">
+<h1>warped_rune <aside>/<a href="obj.html">obj</a>/<a href="obj/effect/warped_rune.html">effect/warped_rune</a></aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L18">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 18"/></a></h1>
+
+<p>time it takes to draw the rune</p><table class="summary" cellspacing="0"><tr><td colspan="2"><h2>Vars</h2><a href="obj/effect/warped_rune.html#var">Jump To Var Details</a></td></tr>
+            <tr><th><a href="obj/effect/warped_rune.html#var/cooldown">cooldown</a></th><td>Nearly all runes needs to know which turf they are on</td></tr>
+            <tr><th><a href="obj/effect/warped_rune.html#var/max_cooldown">max_cooldown</a></th><td>starting cooldown of the rune.</td></tr>
+            <tr><th><a href="obj/effect/warped_rune.html#var/rune_turf">rune_turf</a></th><td>is only used for bluespace crystal erasing as of now</td></tr><tr><td colspan="2"><h2>Procs</h2><a href="obj/effect/warped_rune.html#proc">Jump To Proc Details</a></td></tr>
+            <tr><th><a href="obj/effect/warped_rune.html#proc/Initialize">Initialize</a></th><td>nearly all runes use their turf in some way so we set rune_turf to their turf automatically, the rune also start on cooldown if it uses one.</td></tr>
+            <tr><th><a href="obj/effect/warped_rune.html#proc/attackby">attackby</a></th><td>runes can also be deleted by bluespace crystals relatively fast as an alternative to cleaning them.</td></tr></table>
+    <h2 id="var">Var Details</h2><h5 id="var/cooldown"><aside class="declaration">var </aside>cooldown
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L29">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 29"/></a></h5>
+        <p>Nearly all runes needs to know which turf they are on</p><h5 id="var/max_cooldown"><aside class="declaration">var </aside>max_cooldown
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L30">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 30"/></a></h5>
+        <p>starting cooldown of the rune.</p><h5 id="var/rune_turf"><aside class="declaration">var </aside>rune_turf
+            <aside>&ndash; /<a href="turf.html">turf</a></aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L28">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 28"/></a></h5>
+        <p>is only used for bluespace crystal erasing as of now</p><h2 id="proc">Proc Details</h2><h5 id="proc/Initialize">Initialize<aside>() 
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L59">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 59"/></a></aside>
+        </h5>
+        <p>nearly all runes use their turf in some way so we set rune_turf to their turf automatically, the rune also start on cooldown if it uses one.</p><h5 id="proc/attackby">attackby<aside>(/<a href="obj.html">obj</a>/<a href="obj/item.html">item</a>/used_item, /<a href="mob.html">mob</a>/user) 
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L37">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 37"/></a></aside>
+        </h5>
+        <p>runes can also be deleted by bluespace crystals relatively fast as an alternative to cleaning them.</p></main>
+    <footer class="page-footer transparent">
+        <div class="footer-copyright blue">
+            <div class="container">
+                
+                paradise.dme at commit
+                <a class="white-text" href="https://github.com/PotatoTheDeveloper/Paradise/tree/ff670d867dfb860eb4c33f69c34c9bcfeae62364">ff670d8</a>
+                on branch Lambda &mdash; <a class="white-text" href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/src/dmdoc/README.md">dmdoc 1.2.1</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

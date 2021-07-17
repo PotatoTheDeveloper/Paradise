@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    
+    <meta charset="utf-8" />
+    
+    <base href="../../../" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link rel="stylesheet" href="extra.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <title>&#x2F;obj&#x2F;item&#x2F;slimecross&#x2F;warping - Paradise Code Docs</title>
+    
+</head>
+
+<body>
+    <nav>
+        <div class="nav-wrapper blue">
+            <a href="index.html" class="brand-logo">&nbsp;Paradise Code Docs</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                
+                <li><a href="index.html#modules">Modules</a></li>
+                <li><a href="index.html#types">Types</a></li>
+                
+            </ul>
+        </div>
+    </nav>
+    <main class="container">
+<h1>warping <aside>/<a href="obj.html">obj</a>/<a href="obj/item.html">item</a>/<a href="obj/item/slimecross/warping.html">slimecross/warping</a></aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L6">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 6"/></a></h1>
+
+<table class="summary" cellspacing="0"><tr><td colspan="2"><h2>Vars</h2><a href="obj/item/slimecross/warping.html#var">Jump To Var Details</a></td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#var/drawing_time">drawing_time</a></th><td>time it takes to store the rune back into the crossbreed</td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#var/max_charge">max_charge</a></th><td>the number of &quot;charge&quot; a bluespace crossbreed start with</td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#var/storing_time">storing_time</a></th><td>max number of charge, might be different depending on the crossbreed</td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#var/warp_charge">warp_charge</a></th><td>what runes will be drawn depending on the crossbreed color</td></tr><tr><td colspan="2"><h2>Procs</h2><a href="obj/item/slimecross/warping.html#proc">Jump To Proc Details</a></td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#proc/afterattack">afterattack</a></th><td>using the extract on the floor will &quot;draw&quot; the rune.</td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#proc/examine">examine</a></th><td>duration of the cooldown for the rune only applies to certain runes</td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#proc/warping_crossbreed_absorb">warping_crossbreed_absorb</a></th><td>absorb the rune into the crossbreed adding one more charge to the crossbreed.</td></tr>
+            <tr><th><a href="obj/item/slimecross/warping.html#proc/warping_crossbreed_spawn">warping_crossbreed_spawn</a></th><td>spawns the rune, taking away one rune charge</td></tr></table>
+    <h2 id="var">Var Details</h2><h5 id="var/drawing_time"><aside class="declaration">var </aside>drawing_time
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L16">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 16"/></a></h5>
+        <p>time it takes to store the rune back into the crossbreed</p><h5 id="var/max_charge"><aside class="declaration">var </aside>max_charge
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L14">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 14"/></a></h5>
+        <p>the number of &quot;charge&quot; a bluespace crossbreed start with</p><h5 id="var/storing_time"><aside class="declaration">var </aside>storing_time
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L15">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 15"/></a></h5>
+        <p>max number of charge, might be different depending on the crossbreed</p><h5 id="var/warp_charge"><aside class="declaration">var </aside>warp_charge
+            <aside>&ndash; </aside>
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L13">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 13"/></a></h5>
+        <p>what runes will be drawn depending on the crossbreed color</p><h2 id="proc">Proc Details</h2><h5 id="proc/afterattack">afterattack<aside>(/<a href="atom.html">atom</a>/target, /<a href="mob.html">mob</a>/user, proximity) 
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L69">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 69"/></a></aside>
+        </h5>
+        <p>using the extract on the floor will &quot;draw&quot; the rune.</p><h5 id="proc/examine">examine<aside>() 
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L32">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 32"/></a></aside>
+        </h5>
+        <p>duration of the cooldown for the rune only applies to certain runes</p><h5 id="proc/warping_crossbreed_absorb"><aside class="declaration">proc </aside>warping_crossbreed_absorb<aside>(/<a href="atom.html">atom</a>/target, /<a href="mob.html">mob</a>/user) 
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L107">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 107"/></a></aside>
+        </h5>
+        <p>absorb the rune into the crossbreed adding one more charge to the crossbreed.</p><h5 id="proc/warping_crossbreed_spawn"><aside class="declaration">proc </aside>warping_crossbreed_spawn<aside>(/<a href="atom.html">atom</a>/target, /<a href="mob.html">mob</a>/user) 
+        
+    
+            <a href="https://github.com/PotatoTheDeveloper/Paradise/blob/ff670d867dfb860eb4c33f69c34c9bcfeae62364/code/hispania/modules/research/xenobiology/crossbreeding/warping.dm#L100">
+        <img src="git.png" width="16" height="16" title="code&#x2F;hispania&#x2F;modules&#x2F;research&#x2F;xenobiology&#x2F;crossbreeding&#x2F;warping.dm 100"/></a></aside>
+        </h5>
+        <p>spawns the rune, taking away one rune charge</p></main>
+    <footer class="page-footer transparent">
+        <div class="footer-copyright blue">
+            <div class="container">
+                
+                paradise.dme at commit
+                <a class="white-text" href="https://github.com/PotatoTheDeveloper/Paradise/tree/ff670d867dfb860eb4c33f69c34c9bcfeae62364">ff670d8</a>
+                on branch Lambda &mdash; <a class="white-text" href="https://github.com/SpaceManiac/SpacemanDMM/blob/master/src/dmdoc/README.md">dmdoc 1.2.1</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
